@@ -59,22 +59,25 @@ def first_run(map):
     end_node = start_node
     visiting_node = start_node
     first_solution = []
-    min_distance = math.inf
+    total_first_distance = 0
 
     while visiting_node not in first_solution:
+        min_distance = math.inf
         #for loop to determine what adjacency has the lower distance
         for adjacency in visiting_node['adjacencies']:
             #conditional to assign new minimal distance
             if adjacency[1] < min_distance and adjacency not in first_solution:
-                min_distance = adjacency[1]
                 #for loop to find the next best node
                 for city in map:
                     if city['name'] == adjacency[0]:
                         next_best = city
+                        distance_sum = adjacency[1]
                 #print(min_distance, next_best)
+
+        total_first_distance = total_first_distance + distance_sum
         first_solution.append(visiting_node)
         visiting_node = next_best
-        print(first_solution)
+        print(first_solution, total_first_distance)
 
     """
     min_distance = visiting_node['adjacencies'][0][1]
