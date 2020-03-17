@@ -1,4 +1,5 @@
 from classes import *
+import math
 
 """
 mx : [("cva", 100), ("qro", 150), ("slp", 500), ("acpco", 500)]
@@ -31,8 +32,8 @@ qro_list = [qro_mex, qro_slp, qro_gto]
 slp_list = [slp_qro, slp_gto]
 gto_list = [gto_qro, gto_slp]
 
-cities = [mex, cva, qro, slp, gto]
-cities_adjacencies = [mex_list, cva_list, qro_list, slp_list, gto_list]
+cities = [cva, mex, qro, slp, gto]
+cities_adjacencies = [cva_list, mex_list, qro_list, slp_list, gto_list]
 
 def get_adjacency(edge):
     return (edge.get_node_two().get_name(), edge.get_weight())
@@ -43,7 +44,7 @@ def state_neighborhood(adjacency_list):
         return_list.append(get_adjacency(adjacency))
     return return_list
 
-def get_map(cities, cities_adjacencies):
+def set_map(cities, cities_adjacencies):
     map = []
     for city, adjacency in zip(cities, cities_adjacencies):
         dictionary = {
@@ -53,5 +54,33 @@ def get_map(cities, cities_adjacencies):
         map.append(dictionary)
     return map
 
-map = get_map(cities, cities_adjacencies)
-print(map)
+def first_run(map):
+    start_node = map[0]
+    end_node = start_node
+    visiting_node = start_node
+    first_solution = []
+    min_distance = math.inf
+
+    while visiting_node not in first_solution:
+        #for loop to determine what adjacency has the lower distance
+        for adjacency in visiting_node['adjacencies']:
+            #conditional to assign new minimal distance
+            if adjacency[1] < min_distance and adjacency not in first_solution:
+                min_distance = adjacency[1]
+                #for loop to find the next best node
+                for city in map:
+                    if city['name'] == adjacency[0]:
+                        next_best = city
+                #print(min_distance, next_best)
+        first_solution.append(visiting_node)
+        visiting_node = next_best
+        print(first_solution)
+
+    """
+    min_distance = visiting_node['adjacencies'][0][1]
+    """
+
+map = set_map(cities, cities_adjacencies)
+#print(map)
+
+first_run(map)
