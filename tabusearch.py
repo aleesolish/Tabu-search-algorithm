@@ -105,6 +105,7 @@ def first_run(map):
 
 #FUNCTION FOR GENERATING DOMAIN OF TABU SEARCH
 def generate_tabu_search_domain(solution):
+    domain = []
     for element in solution[1:-1]:
         index_one = solution.index(element)
         element_one = solution[index_one]
@@ -113,16 +114,29 @@ def generate_tabu_search_domain(solution):
             element_two = solution[index_two]
             if index_one == index_two:
                 continue
+            #element exchange
+            sum = 0
             x_change = copy.deepcopy(solution)
             x_change[index_one] = element_two
             x_change[index_two] = element_one
-            for element in x_change:
-                print(element)
-            print()
+            #lookup for next node weight
+            for element in x_change[0:-1]:
+                for edge in element['edges']:
+                    if x_change[x_change.index(element)+1]['node'] == edge[0]:
+                        sum = sum + edge[1]
+                        #print(element, sum)
+
+            x_change.append(sum)
+            if x_change not in domain:
+                domain.append(x_change)
+    sorting_index = len(domain[0])-1
+    domain.sort(key=lambda x:x[sorting_index])
+
+    return domain
 
 map = set_map(nodes, edges)
 #print(map)
 first_solution, first_total_distance = first_run(map)
 #print(first_solution, first_total_distance)
 
-generate_tabu_search_domain(first_solution)
+domain = generate_tabu_search_domain(first_solution)
