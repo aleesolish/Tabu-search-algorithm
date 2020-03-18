@@ -1,4 +1,5 @@
 from classes import *
+import copy
 
 """
 ie.
@@ -102,11 +103,26 @@ def first_run(map):
 
     return first_solution, total_first_distance
 
-
-
-
+#FUNCTION FOR GENERATING DOMAIN OF TABU SEARCH
+def generate_tabu_search_domain(solution):
+    for element in solution[1:-1]:
+        index_one = solution.index(element)
+        element_one = solution[index_one]
+        for element_t in solution[1:-1]:
+            index_two = solution.index(element_t)
+            element_two = solution[index_two]
+            if index_one == index_two:
+                continue
+            x_change = copy.deepcopy(solution)
+            x_change[index_one] = element_two
+            x_change[index_two] = element_one
+            for element in x_change:
+                print(element)
+            print()
 
 map = set_map(nodes, edges)
-print(map)
+#print(map)
 first_solution, first_total_distance = first_run(map)
-print(first_solution, first_total_distance)
+#print(first_solution, first_total_distance)
+
+generate_tabu_search_domain(first_solution)
