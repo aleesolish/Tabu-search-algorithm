@@ -79,7 +79,7 @@ def first_run(map):
     visiting_node = start_node
     previous_node = start_node
     first_solution = []
-    total_first_distance = 0
+    total_first_cost = 0
 
     #while end_node not in first_solution:
     while visiting_node not in first_solution:
@@ -96,12 +96,12 @@ def first_run(map):
 
         first_solution.append(visiting_node)
         visiting_node = next_best
-        total_first_distance = total_first_distance + min_distance
+        total_first_cost = total_first_cost + min_distance
 
     first_solution.append(end_node)
-    total_first_distance = total_first_distance - min_distance
+    total_first_cost = total_first_cost - min_distance
 
-    return first_solution, total_first_distance
+    return first_solution, total_first_cost
 
 #FUNCTION FOR GENERATING DOMAIN OF TABU SEARCH
 def generate_tabu_search_domain(solution):
@@ -134,9 +134,42 @@ def generate_tabu_search_domain(solution):
 
     return domain
 
+def tabu_search(previous_solution, previous_cost, rounds):
+    solution = previous_solution
+    cost = previous_cost
+
+    round = 0
+    while round < rounds:
+        domain = generate_tabu_search_domain(solution)
+        #domain[0] will always contain possible solution with lowest cost
+        #next_solution contains its cost within the list, solution does not contains its cost within the list, it is obtained by parameter: previous_cost
+        next_solution = domain[0]
+        next_cost = next_solution.pop()
+        #solution.append(cost)
+        if next_solution == previous_solution:
+            next_solution = domain[1]
+            next_cost = next_solution.pop()
+        #compare solution to next solution
+        idx = 0
+        while idx < len(next_solution)-1:
+            if solution[idx] != next_solution[idx]:
+                previous_solution = copy.deepcopy(solution)
+                solution = copy.deepcopy(next_solution)
+                for data, data2, data3 in zip(previous_solution, solution, next_solution):
+                    print(data['node'], data2['node'], data3['node'])
+
+                print(cost, next_cost)
+                print()
+                #solution.pop()
+                #print(solution)
+
+            idx = idx + 1
+        round = round + 1
+
 map = set_map(nodes, edges)
 #print(map)
-first_solution, first_total_distance = first_run(map)
+first_solution, first_cost = first_run(map)
 #print(first_solution, first_total_distance)
 
-domain = generate_tabu_search_domain(first_solution)
+#domain = generate_tabu_search_domain(first_solution)
+tabu_search(first_solution, first_cost, 4)
