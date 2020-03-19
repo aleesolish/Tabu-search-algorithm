@@ -137,6 +137,8 @@ def generate_tabu_search_domain(solution):
 def tabu_search(previous_solution, previous_cost, rounds):
     solution = previous_solution
     cost = previous_cost
+    final_cost = 0
+    tabu_list = []
 
     round = 0
     while round < rounds:
@@ -155,16 +157,18 @@ def tabu_search(previous_solution, previous_cost, rounds):
             if solution[idx] != next_solution[idx]:
                 previous_solution = copy.deepcopy(solution)
                 solution = copy.deepcopy(next_solution)
-                for data, data2, data3 in zip(previous_solution, solution, next_solution):
-                    print(data['node'], data2['node'], data3['node'])
+                tabu_list.append(next_solution)
 
-                print(cost, next_cost)
-                print()
+                addition = next_cost - cost
+                final_cost = final_cost + addition
                 #solution.pop()
                 #print(solution)
 
             idx = idx + 1
         round = round + 1
+    cost = cost + final_cost
+    return tabu_list, cost, final_cost, cost-final_cost
+
 
 map = set_map(nodes, edges)
 #print(map)
@@ -172,4 +176,6 @@ first_solution, first_cost = first_run(map)
 #print(first_solution, first_total_distance)
 
 #domain = generate_tabu_search_domain(first_solution)
-tabu_search(first_solution, first_cost, 4)
+tabu_list, total_tabu_cost, tabu_addition, initial_cost = tabu_search(first_solution, first_cost, 4)
+
+print('tabu list: ', tabu_list, ' total tabu cost: ', total_tabu_cost, ' tabu addition: ', tabu_addition, 'initial cost: ', initial_cost)
